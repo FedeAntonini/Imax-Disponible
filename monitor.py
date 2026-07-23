@@ -44,7 +44,7 @@ CINE_TEXTO = "IMAX Theatre (Norcenter)"
 PELICULA_TEXTO = "La Odisea"
 
 # Fecha de corte: avisar apenas aparezca un día >= a esta fecha.
-FECHA_CORTE = date(2026, 7, 1)
+FECHA_CORTE = date(2026, 8, 6)
 
 # --- Selectores reales del sitio (verificados) ---
 SEL_CINE = "select#ctl00_Contenido_lstCinemaFull"
