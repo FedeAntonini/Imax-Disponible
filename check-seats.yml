@@ -1,0 +1,40 @@
+name: Chequear asientos disponibles
+
+on:
+  schedule:
+    # Cada 10 minutos. Sintaxis cron: minuto hora dia mes dia_semana (UTC)
+    - cron: "*/10 * * * *"
+  workflow_dispatch: {}   # permite tirarlo a mano desde la pestaña Actions
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar repo
+        uses: actions/checkout@v4
+
+      - name: Instalar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependencias
+        run: |
+          pip install -r requirements.txt
+          playwright install --with-deps chromium
+
+      - name: Correr el monitor
+        env:
+          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          EMAIL_APP_PASSWORD: ${{ secrets.EMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        run: python monitor.py
+
+      - name: Guardar estado (evita re-notificar)
+        if: always()
+        run: |
+          git config user.name "showcase-bot"
+          git config user.email "actions@github.com"
+          git add notified_state.json || true
+          git diff --staged --quiet || git commit -m "actualizar estado de notificaciones [skip ci]"
+          git push || true
