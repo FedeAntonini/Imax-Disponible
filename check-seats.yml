@@ -1,8 +1,8 @@
-name: Chequear asientos disponibles
+name: Chequear nuevas funciones de La Odisea
 
 on:
   schedule:
-    # Cada 10 minutos. Sintaxis cron: minuto hora dia mes dia_semana (UTC)
+    # Cada 10 minutos. No requiere login ni reservas, es liviano.
     - cron: "*/10 * * * *"
   workflow_dispatch: {}   # permite tirarlo a mano desde la pestaña Actions
 

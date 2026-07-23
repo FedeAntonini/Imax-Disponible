@@ -1,45 +1,45 @@
-# Bot de aviso de asientos - Showcase Norcenter IMAX
+# Bot de aviso - nuevas funciones de La Odisea (IMAX Norcenter)
 
-Chequea cada 10 minutos si tus asientos preferidos (filas I/H/J, butacas
-17-20) están libres para la función que definas, y te avisa por mail.
-El bot **no compra entradas** — vos hacés el checkout siempre.
+Avisa por mail apenas el cine publique funciones para el **6 de agosto
+de 2026 en adelante** (hoy sólo hay cargado hasta el 5/8). No hace
+login, no reserva entradas, no toca el mapa de asientos — sólo lee el
+selector público de "Día" de la boletería y compara contra la fecha de
+corte.
 
-## Setup (una sola vez)
+## Setup
 
-1. **Creá un repo en GitHub** (puede ser público o privado) y subí estos
-   archivos tal cual están.
-
-2. **Completá los selectores en `monitor.py`** (buscá `# TODO`).
-   Instrucciones detalladas en el comentario `COMO_COMPLETAR_LOS_SELECTORES`
-   arriba del archivo. Necesitás inspeccionar la página real con F12.
-
-3. **Editá `PELICULA_TEXTO`** en `monitor.py` con el nombre (o parte del
-   nombre) de la película que querés monitorear.
-
-4. **Generá una contraseña de aplicación de Gmail:**
+1. **Generá una contraseña de aplicación de Gmail:**
    - Activá verificación en 2 pasos: https://myaccount.google.com/security
-   - Generá la clave acá: https://myaccount.google.com/apppasswords
+   - Generá la clave: https://myaccount.google.com/apppasswords
 
-5. **Cargá los Secrets en GitHub:**
-   - En tu repo → Settings → Secrets and variables → Actions → "New repository secret"
-   - Creá estos 3:
-     - `EMAIL_FROM` → tu mail de Gmail
-     - `EMAIL_APP_PASSWORD` → la contraseña de aplicación generada en el paso 4
-     - `EMAIL_TO` → a dónde querés que llegue el aviso (puede ser el mismo mail)
+2. **Cargá los Secrets en GitHub** (repo → Settings → Secrets and
+   variables → Actions → New repository secret):
+   - `EMAIL_FROM` → tu mail de Gmail
+   - `EMAIL_APP_PASSWORD` → la contraseña de aplicación del paso 1
+   - `EMAIL_TO` → a dónde querés que llegue el aviso
 
-6. **Listo.** El workflow (`.github/workflows/check-seats.yml`) corre solo
-   cada 10 minutos. Podés probarlo manualmente desde la pestaña **Actions**
-   del repo → "Chequear asientos disponibles" → "Run workflow".
+3. **Probalo manual** desde la pestaña Actions → "Chequear nuevas
+   funciones de La Odisea" → "Run workflow".
+
+## Qué pasa cuando te avisa
+
+El bot NO reserva ni compra nada. Cuando te llega el mail, entrás vos a
+mano a:
+https://www.voyalcine.net/showcase/boleteria.aspx
+elegís La Odisea → IMAX → la fecha nueva → horario (19:00 o 22:35) →
+y ahí sí, si querés, seguimos armando la parte de chequeo de asientos
+preferidos (filas H/I/J, butacas 17-20) para esa función puntual, una
+vez que exista de verdad (esa parte sí requiere login con tu cuenta,
+así que la dejamos aparte para no correr ese riesgo mientras no hace
+falta).
+
+## Cambiar la fecha de corte
+
+En `monitor.py`, la línea `FECHA_CORTE = date(2026, 8, 6)` — cambiala
+si querés otro punto de corte.
 
 ## Si el bot deja de avisar
 
-Revisá la pestaña **Actions** en GitHub. Si un run aparece en rojo (❌),
-también te va a llegar un mail de alerta distinto ("El bot de entradas se
-rompió"). Lo más probable es que el sitio cambió su HTML y hay que
-reajustar los selectores de `monitor.py`.
-
-## Cambiar el intervalo
-
-En `check-seats.yml`, la línea `cron: "*/10 * * * *"` — cambiá el `10` por
-los minutos que quieras (mínimo recomendado: 5, para no generar tráfico
-excesivo al sitio).
+Revisá la pestaña Actions en GitHub. Si un run aparece en rojo (❌),
+también te llega un mail de alerta aparte. La causa más probable es que
+"La Odisea" salió de cartelera en ese cine.
