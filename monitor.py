@@ -141,7 +141,18 @@ def buscar_fechas_disponibles(page) -> list:
     page.select_option(SEL_CINE, label=CINE_TEXTO)
     page.wait_for_timeout(1500)
 
-    page.select_option(SEL_PELICULA, label=re.compile(re.escape(PELICULA_TEXTO), re.I))
+    opciones_pelicula = page.query_selector_all(f"{SEL_PELICULA} option")
+    textos_pelicula = [o.inner_text() for o in opciones_pelicula]
+    patron = re.compile(re.escape(PELICULA_TEXTO), re.I)
+    coincidencia = next((t for t in textos_pelicula if patron.search(t)), None)
+
+    if coincidencia is None:
+        raise RuntimeError(
+            f"No se encontró la película '{PELICULA_TEXTO}' en la lista. "
+            f"Opciones disponibles: {textos_pelicula}"
+        )
+
+    page.select_option(SEL_PELICULA, label=coincidencia)
     page.wait_for_timeout(1500)
 
     page.select_option(SEL_FORMATO, index=1)
